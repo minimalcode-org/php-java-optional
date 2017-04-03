@@ -29,6 +29,3 @@ $optBook = OptionalBook::of($book);
 http://download.java.net/java/jdk9/docs/api/java/util/Optional.html
 
 http://www.nurkiewicz.com/2013/08/optional-in-java-8-cheat-sheet.html
-
-https://dzone.com/articles/java-8-optional-whats-point
-
