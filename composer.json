@@ -1,0 +1,26 @@
+{
+  "name": "minimalcode/php-java-optional",
+  "type": "library",
+  "description": "Java9 Optional implementation for PHP",
+  "keywords": ["java", "optional", "option", "generic"],
+  "homepage": "http://minimalcode.org",
+  "license": "Apache-2.0",
+  "authors": [
+    {
+      "name": "Fabio Piro",
+      "email": "pirofabio@gmail.com"
+    }
+  ],
+  "require": {
+    "php": ">=5.4"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "4.8.*"
+  },
+  "autoload": {
+    "psr-4": { "Minimalcode\\Optional\\": "src/Minimalcode/Optional/" }
+  },
+  "autoload-dev": {
+    "psr-4": { "Minimalcode\\Optional\\": "tests/Minimalcode/Optional/" }
+  }
+}
