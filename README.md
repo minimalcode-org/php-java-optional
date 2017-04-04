@@ -30,4 +30,6 @@ http://download.java.net/java/jdk9/docs/api/java/util/Optional.html
 
 https://www.mkyong.com/java8/java-8-optional-in-depth/
 
+http://blog.codefx.org/java/dev/java-9-optional/
+
 http://iteratrlearning.com/java9/2016/09/05/java9-optional.html
