@@ -290,7 +290,7 @@ abstract class AbstractOptional
      */
     public function __toString()
     {
-        return sprintf(__CLASS__ . '[%s]', ($this->value !== null ?: 'empty'));
+        return sprintf(__CLASS__ . '[%s]', (null !== $this->value ? $this->value : 'empty'));
     }
 
     /**
