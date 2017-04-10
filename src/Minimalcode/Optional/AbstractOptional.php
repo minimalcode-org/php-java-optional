@@ -108,13 +108,15 @@ abstract class AbstractOptional
      * If a value is present, performs the given action with the value, otherwise does nothing.
      *
      * @param callable $action the action to be performed, if a value is present
-     * @return void
+     * @return static API change for allow chaining
      */
     public function ifPresent(callable $action)
     {
         if (null !== $this->value) {
             $action($this->value);
         }
+
+        return $this;
     }
 
     /**
