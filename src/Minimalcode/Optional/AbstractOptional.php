@@ -108,12 +108,27 @@ abstract class AbstractOptional
      * If a value is present, performs the given action with the value, otherwise does nothing.
      *
      * @param callable $action the action to be performed, if a value is present
-     * @return static API change for allow chaining
+     * @return static API change compared to Java Optonal for allowing chain
      */
     public function ifPresent(callable $action)
     {
         if (null !== $this->value) {
             $action($this->value);
+        }
+
+        return $this;
+    }
+
+    /**
+     * If a value is not present, performs the given action with the value, otherwise does nothing.
+     *
+     * @param callable $emptyAction the action to be performed, if a value is not present
+     * @return static API change compared to Java Optonal for allowing chain
+     */
+    public function ifAbsent(callable $emptyAction)
+    {
+        if (null === $this->value) {
+            $emptyAction();
         }
 
         return $this;
