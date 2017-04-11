@@ -108,7 +108,7 @@ abstract class AbstractOptional
      * If a value is present, performs the given action with the value, otherwise does nothing.
      *
      * @param callable $action the action to be performed, if a value is present
-     * @return static API change compared to Java Optonal for allowing chain
+     * @return static API change compared to Java Optional for allowing chain
      */
     public function ifPresent(callable $action)
     {
@@ -123,15 +123,13 @@ abstract class AbstractOptional
      * If a value is not present, performs the given action with the value, otherwise does nothing.
      *
      * @param callable $emptyAction the action to be performed, if a value is not present
-     * @return static API change compared to Java Optonal for allowing chain
+     * @return void this is deliberately "void" to disallow ifAbsent()->orElse()
      */
     public function ifAbsent(callable $emptyAction)
     {
         if (null === $this->value) {
             $emptyAction();
         }
-
-        return $this;
     }
 
     /**
