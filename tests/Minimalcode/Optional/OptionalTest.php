@@ -24,17 +24,15 @@ class OptionalTest extends \PHPUnit_Framework_TestCase
         static::assertNotNull($optBook);
     }
 
-	public function testOfNullableTypeSafety()
+	public function testOfEmptyTypeSafety()
 	{
-        $optBook = OptionalBook::ofNullable(null);
-	    $optPerson = OptionalPerson::ofNullable(null);
-
-        static::assertNotNull($optBook);
-        static::assertNotNull($optPerson);
+        $optBook = OptionalBook::ofEmpty();
+	    $optPerson = OptionalPerson::ofEmpty();
 
         static::assertInstanceOf(OptionalBook::class, $optBook);
         static::assertInstanceOf(OptionalPerson::class, $optPerson);
-	}
+        static::assertNotSame($optBook, $optPerson);
+    }
 
     public function testOrElse()
     {

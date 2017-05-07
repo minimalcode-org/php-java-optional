@@ -21,7 +21,7 @@ abstract class AbstractOptional
     /**
      * Static per concrete class cache for optional empty instances, for GC optimization
      *
-     * @var array
+     * @var string[] [$class1 => $emptyInstance1, $class2 => $emptyInstance2, ...]
      */
     private static $emptyCache = [];
 
