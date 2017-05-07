@@ -19,9 +19,11 @@ namespace Minimalcode\Optional;
 abstract class AbstractOptional
 {
     /**
-     * Common instance for empty optional, for GC optimization
+     * Static per concrete class cache for optional empty instances, for GC optimization
+     *
+     * @var array
      */
-    private static $EMPTY;
+    private static $emptyCache = [];
 
     /**
      * The value, or null is no value is present
@@ -64,7 +66,11 @@ abstract class AbstractOptional
      */
     public static function ofEmpty()
     {
-        return self::$EMPTY ?: self::$EMPTY = new static();
+        if (!array_key_exists(static::class, self::$emptyCache)) {
+            self::$emptyCache[static::class] = new static();
+        }
+
+        return self::$emptyCache[static::class];
     }
 
     /**
