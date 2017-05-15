@@ -8,7 +8,7 @@ namespace Minimalcode\Optional;
  * @method Person|null orElseGet(callable $supplier)
  * @method Person orElseThrow(callable $exceptionSupplier)
  */
-class OptionalPerson extends AbstractOptional
+class TestOptionalPerson extends AbstractOptional
 {
     /**
      * @inheritdoc

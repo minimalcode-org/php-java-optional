@@ -8,7 +8,7 @@ namespace Minimalcode\Optional;
  * @method Book|null orElseGet(callable $supplier)
  * @method Book orElseThrow(callable $exceptionSupplier)
  */
-class OptionalBook extends AbstractOptional
+class TestOptionalBook extends AbstractOptional
 {
     /**
      * @inheritdoc

@@ -21,7 +21,7 @@ abstract class AbstractOptional
     /**
      * Static per concrete class cache for optional empty instances, for GC optimization
      *
-     * @var string[] [$class1 => $emptyInstance1, $class2 => $emptyInstance2, ...]
+     * @var AbstractOptional[] ["$class1" => $emptyInstance1, "$class2" => $emptyInstance2, ...]
      */
     private static $emptyCache = [];
 
@@ -66,7 +66,7 @@ abstract class AbstractOptional
      */
     public static function ofEmpty()
     {
-        if (!array_key_exists(static::class, self::$emptyCache)) {
+        if (!\array_key_exists(static::class, self::$emptyCache)) {
             self::$emptyCache[static::class] = new static();
         }
 
@@ -82,7 +82,9 @@ abstract class AbstractOptional
      */
     public static function ofNullable($value)
     {
-        return null !== $value ? self::of($value) : self::ofEmpty();
+        return null !== $value
+            ? self::of($value)
+            : self::ofEmpty();
     }
 
     /**
@@ -168,7 +170,9 @@ abstract class AbstractOptional
      */
     public function map(callable $mapper)
     {
-        return null === $this->value ? self::ofEmpty() : self::ofNullable($mapper($this->value));
+        return null === $this->value
+            ? self::ofEmpty()
+            : self::ofNullable($mapper($this->value));
     }
 
     /**
@@ -214,7 +218,9 @@ abstract class AbstractOptional
             return $this;
         }
 
-        return $predicate($this->value) ? $this : self::ofEmpty();
+        return $predicate($this->value)
+            ? $this
+            : self::ofEmpty();
     }
 
     /**
@@ -226,7 +232,9 @@ abstract class AbstractOptional
      */
     public function orElse($other)
     {
-        return null !== $this->value ? $this->value : $this->validate($other);
+        return null !== $this->value
+            ? $this->value
+            : $this->validate($other);
     }
 
     /**
@@ -239,7 +247,9 @@ abstract class AbstractOptional
      */
     public function orElseGet(callable $supplier)
     {
-        return null !== $this->value ? $this->value: $this->validate($supplier());
+        return null !== $this->value
+            ? $this->value
+            : $this->validate($supplier());
     }
 
     /**
@@ -280,7 +290,7 @@ abstract class AbstractOptional
         $optional = $supplier();
 
         if (!$optional instanceof self) {
-            throw new \InvalidArgumentException('Supplier must return a ' . __CLASS__ . ' instance');
+            throw new \InvalidArgumentException(\sprintf('Supplier must return a %s instance', static::class));
         }
 
         return $optional;
@@ -311,16 +321,8 @@ abstract class AbstractOptional
      */
     public function __toString()
     {
-        return \sprintf(__CLASS__ . '[%s]', (null !== $this->value ? $this->value : 'empty'));
+        return \sprintf('%s[%s]', static::class, (null !== $this->value ? $this->value : 'empty'));
     }
-
-    /**
-     * Mime the 'generics' support for this optional
-     *
-     * @param mixed $value cannot be null
-     * @return boolean
-     */
-    protected abstract function supports($value);
 
     /**
      * Validates the value only if not null
@@ -332,9 +334,17 @@ abstract class AbstractOptional
     private function validate($value)
     {
         if (null !== $value && !$this->supports($value)) {
-            throw new \InvalidArgumentException('The value for optional is unsupported');
+            throw new \InvalidArgumentException(\sprintf('The value for %s is unsupported', static::class));
         }
 
         return $value;
     }
+
+    /**
+     * Mime the 'generics' support for this optional
+     *
+     * @param mixed $value cannot be null
+     * @return bool
+     */
+    protected abstract function supports($value);
 }

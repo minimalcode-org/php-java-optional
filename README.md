@@ -1,6 +1,23 @@
 Php implementation of Java-9 Optional, with 'generics' support
 
+Features
+=======
+- Full 1:1 implementation of Java-9 Optional API
+- Generic support (conceptually, obviously), for objects and primitives
+- `OptionalBool`, `OptionalFloat`, `OptionalInt`, `OptionalString` already available
+- Only 1 single class, optimized for performance
+- Production ready
+
 Usage
+=======
+
+```php
+echo OptionalString::of('hello')->orElse('world');// echo 'hello' 
+
+echo OptonalInt::ofNullable(null)->orElse(42);// echo 42
+```
+
+Generics
 =======
 
 ```php

@@ -2,7 +2,7 @@
   "name": "minimalcode/php-java-optional",
   "type": "library",
   "description": "Java9 Optional implementation for PHP",
-  "keywords": ["java", "optional", "option", "generic"],
+  "keywords": ["php", "java", "optional", "option", "generic"],
   "homepage": "http://minimalcode.org",
   "license": "Apache-2.0",
   "authors": [
@@ -12,7 +12,7 @@
     }
   ],
   "require": {
-    "php": ">=5.4"
+    "php": ">=5.5"
   },
   "require-dev": {
     "phpunit/phpunit": "4.8.*"

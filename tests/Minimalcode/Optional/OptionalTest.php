@@ -6,39 +6,146 @@ class OptionalTest extends \PHPUnit_Framework_TestCase
 {
     public function testOptionalOfEmpty()
     {
-        $empty = OptionalBook::ofEmpty();
-        $empty2 = OptionalBook::ofEmpty();
+        $empty = TestOptionalBook::ofEmpty();
+        $empty2 = TestOptionalBook::ofEmpty();
         static::assertSame($empty, $empty2);
     }
 
     public function testOf()
     {
         $book = new Book();
-        $optBook = OptionalBook::of($book);
+        $optBook = TestOptionalBook::of($book);
         static::assertSame($book, $optBook->get());
+    }
+
+    public function testOfException()
+    {
+        $this->setExpectedException(\LogicException::class);
+        TestOptionalBook::of(null);
+    }
+
+    public function testGet()
+    {
+        $book = new Book();
+        static::assertSame($book, TestOptionalBook::of($book)->get());
+    }
+
+    public function testMap()
+    {
+        $book = new Book();
+        static::assertEquals(0, $book->getPages());
+
+        $optBook = TestOptionalBook::of($book)
+            ->map(function (Book $book) {
+                $book->setPages(1000);
+                return $book;
+            });
+
+        static::assertSame($book, $optBook->get());
+        static::assertEquals(1000, $book->getPages());
+    }
+
+    public function testMapEmpty()
+    {
+        $executed = false;
+        TestOptionalBook::ofEmpty()
+            ->map(function ()  {
+                throw new \LogicException();
+            });
+
+        static::assertFalse($executed);
+    }
+
+    public function testGetException()
+    {
+        $this->setExpectedException(\LogicException::class);
+        TestOptionalBook::ofEmpty()->get();
+    }
+
+    public function testOrElseThrow()
+    {
+        $book = TestOptionalBook::of(new Book())
+            ->orElseThrow(function () {
+                return new \LogicException();
+            });
+
+        self::assertInstanceOf(Book::class, $book);
+    }
+
+    public function testOrElseThrowEmpty()
+    {
+        $this->setExpectedException(\LogicException::class);
+
+        TestOptionalBook::ofEmpty()
+            ->orElseThrow(function () {
+                return new \LogicException();
+            });
     }
 
     public function testOfNullable()
     {
-        $optBook = OptionalBook::ofNullable(null);
+        $optBook = TestOptionalBook::ofNullable(null);
         static::assertNotNull($optBook);
     }
 
-	public function testOfEmptyTypeSafety()
+    public function testOfEmptyTypeSafety()
 	{
-        $optBook = OptionalBook::ofEmpty();
-	    $optPerson = OptionalPerson::ofEmpty();
+        $optBook = TestOptionalBook::ofEmpty();
+	    $optPerson = TestOptionalPerson::ofEmpty();
 
-        static::assertInstanceOf(OptionalBook::class, $optBook);
-        static::assertInstanceOf(OptionalPerson::class, $optPerson);
+        static::assertInstanceOf(TestOptionalBook::class, $optBook);
+        static::assertInstanceOf(TestOptionalPerson::class, $optPerson);
         static::assertNotSame($optBook, $optPerson);
+    }
+
+    public function testIfAbsent()
+    {
+        $absent = false;
+        TestOptionalBook::ofEmpty()
+            ->ifAbsent(function () use (&$absent) {
+                $absent = true;
+            });
+
+        static::assertTrue($absent);
+    }
+
+    public function testIfPresentOrElseWhenPresent()
+    {
+        $absent = false;
+        TestOptionalBook::ofEmpty()
+            ->ifPresentOrElse(
+                function () {
+                    throw new \InvalidArgumentException();
+                },
+                function () use (&$absent) {
+                    $absent = true;
+                }
+            );
+
+        static::assertTrue($absent);
+    }
+
+    public function testIfPresentOrElseWhenAbsent()
+    {
+        $present = false;
+        TestOptionalBook::of(new Book())
+            ->ifPresentOrElse(
+                function () use (&$present) {
+                    $present = true;
+                },
+                function (){
+                    throw new \InvalidArgumentException();
+                }
+            );
+
+        static::assertTrue($present);
     }
 
     public function testOrElse()
     {
         $book = new Book();
         $book2 = new Book();
-        $value = OptionalBook::ofNullable($book)->orElse($book2);
+        $value = TestOptionalBook::ofNullable($book)->orElse($book2);
         static::assertSame($book, $value);
         static::assertNotSame($book, $book2);
     }
@@ -46,29 +153,29 @@ class OptionalTest extends \PHPUnit_Framework_TestCase
     public function testOrElseNull()
     {
         $book = new Book();
-        $value = OptionalBook::ofNullable(null)->orElse($book);
+        $value = TestOptionalBook::ofNullable(null)->orElse($book);
         static::assertSame($book, $value);
         static::assertNotNull($book);
     }
 
     public function testIsPresent()
     {
-        $optBook = OptionalBook::ofEmpty();
+        $optBook = TestOptionalBook::ofEmpty();
         static::assertFalse($optBook->isPresent());
 
-        $optBook2 = OptionalBook::of(new Book());
+        $optBook2 = TestOptionalBook::of(new Book());
         static::assertTrue($optBook2->isPresent());
     }
 
     public function testIsPresentNot()
     {
-        self::assertFalse(OptionalBook::ofEmpty()->isPresent());
+        self::assertFalse(TestOptionalBook::ofEmpty()->isPresent());
     }
 
     public function testIfPresent()
     {
         $success = false;
-        OptionalBook::of(new Book())
+        TestOptionalBook::of(new Book())
             ->ifPresent(function () use (&$success) {
                 $success = true;
             });
@@ -79,7 +186,7 @@ class OptionalTest extends \PHPUnit_Framework_TestCase
     public function testIfPresentNot()
     {
         $success = false;
-        OptionalBook::ofEmpty()
+        TestOptionalBook::ofEmpty()
             ->ifPresent(function () use (&$success) {
                 $success = true;
             });
@@ -92,11 +199,57 @@ class OptionalTest extends \PHPUnit_Framework_TestCase
         $book = new Book();
         $book->setPages(5);
 
-        $optBook = OptionalBook::of($book)
+        $optBook = TestOptionalBook::of($book)
             ->filter(function(Book $b) {
                 return $b->getPages() > 5;
             });
 
         self::assertFalse($optBook->isPresent());
+    }
+    public function testEquals()
+    {
+        $foo = 'foo';
+        static::assertTrue(OptionalString::of($foo)->equals(OptionalString::of('foo')));
+        static::assertTrue(OptionalString::of($foo)->equals(OptionalString::of($foo)));
+        static::assertFalse(OptionalString::of($foo)->equals(OptionalString::of('bar')));
+    }
+
+    public function testTostring()
+    {
+        static::assertSame('Minimalcode\Optional\OptionalString[hello]', (string) OptionalString::of('hello'));
+        static::assertSame('Minimalcode\Optional\OptionalInt[42]', (string) OptionalInt::of(42));
+        static::assertSame('Minimalcode\Optional\OptionalBool[1]', (string) OptionalBool::of(true));
+    }
+
+    public function testOptionalPrimitive()
+    {
+        static::assertInstanceOf(OptionalString::class, OptionalString::of('foo'));
+        static::assertInstanceOf(OptionalBool::class, OptionalBool::of(true));
+        static::assertInstanceOf(OptionalFloat::class, OptionalFloat::of(2.5));
+        static::assertInstanceOf(OptionalInt::class, OptionalInt::of(2));
+    }
+
+    public function testWrongOptionalString()
+    {
+        $this->setExpectedException(\InvalidArgumentException::class);
+        OptionalString::of(-1);
+    }
+
+    public function testWrongOptionalInt()
+    {
+        $this->setExpectedException(\InvalidArgumentException::class);
+        OptionalInt::of('exception');
+    }
+
+    public function testWrongOptionalFloat()
+    {
+        $this->setExpectedException(\InvalidArgumentException::class);
+        OptionalFloat::of('exception');
+    }
+
+    public function testWrongOptionalBool()
+    {
+        $this->setExpectedException(\InvalidArgumentException::class);
+        OptionalBool::of('exception');
     }
 }
