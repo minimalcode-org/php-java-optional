@@ -5,9 +5,30 @@ namespace Minimalcode\Optional;
 class Book
 {
     /**
+     * @var string
+     */
+    private $title;
+
+    /**
      * @var int
      */
     private $pages;
+
+    /**
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * @param string $title
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+    }
 
     /**
      * @return int

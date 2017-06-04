@@ -20,7 +20,11 @@ class OptionalTest extends \PHPUnit_Framework_TestCase
 
     public function testOfException()
     {
-        $this->setExpectedException(\LogicException::class);
+        $this->setExpectedException(
+            \LogicException::class,
+            'Value for Minimalcode\Optional\TestOptionalBook cannot be null, use Optional::ofNullable instead'
+        );
+
         TestOptionalBook::of(null);
     }
 
@@ -58,7 +62,10 @@ class OptionalTest extends \PHPUnit_Framework_TestCase
 
     public function testGetException()
     {
-        $this->setExpectedException(\LogicException::class);
+        $this->setExpectedException(
+            \LogicException::class, 'No value present for Minimalcode\Optional\TestOptionalBook, use ::orElse instead'
+        );
+
         TestOptionalBook::ofEmpty()->get();
     }
 
@@ -74,11 +81,11 @@ class OptionalTest extends \PHPUnit_Framework_TestCase
 
     public function testOrElseThrowEmpty()
     {
-        $this->setExpectedException(\LogicException::class);
+        $this->setExpectedException(\LogicException::class, 'Error');
 
         TestOptionalBook::ofEmpty()
             ->orElseThrow(function () {
-                return new \LogicException();
+                return new \LogicException('Error');
             });
     }
 
@@ -206,6 +213,43 @@ class OptionalTest extends \PHPUnit_Framework_TestCase
 
         self::assertFalse($optBook->isPresent());
     }
+
+    public function testFilterWithEmptyValue()
+    {
+        $optBook = TestOptionalBook::ofEmpty()
+            ->filter(function(Book $b) {
+                return $b instanceof Book;
+            });
+
+        self::assertFalse($optBook->isPresent());
+    }
+
+    public function testOrElseGet()
+    {
+        $book1 = new Book();
+        $book1->setTitle('b1');
+
+        $book1FromOpt = TestOptionalBook::of($book1)
+            ->orElseGet(function () {
+                $book2 = new Book();
+                $book2->setTitle('b2');
+
+                return $book2;
+            });
+
+        static::assertSame($book1FromOpt->getTitle(), $book1->getTitle());
+    }
+
+    public function testOrElseGetWithEmptyValue()
+    {
+        $book2 = TestOptionalBook::ofEmpty()
+            ->orElseGet(function () {
+                return new Book();
+            });
+
+        static::assertNotNull($book2);
+    }
+
     public function testEquals()
     {
         $foo = 'foo';
@@ -231,25 +275,37 @@ class OptionalTest extends \PHPUnit_Framework_TestCase
 
     public function testWrongOptionalString()
     {
-        $this->setExpectedException(\InvalidArgumentException::class);
+        $this->setExpectedException(
+            \InvalidArgumentException::class, 'The value for Minimalcode\Optional\OptionalString is unsupported'
+        );
+
         OptionalString::of(-1);
     }
 
     public function testWrongOptionalInt()
     {
-        $this->setExpectedException(\InvalidArgumentException::class);
+        $this->setExpectedException(
+            \InvalidArgumentException::class, 'The value for Minimalcode\Optional\OptionalInt is unsupported'
+        );
+
         OptionalInt::of('exception');
     }
 
     public function testWrongOptionalFloat()
     {
-        $this->setExpectedException(\InvalidArgumentException::class);
+        $this->setExpectedException(
+            \InvalidArgumentException::class, 'The value for Minimalcode\Optional\OptionalFloat is unsupporte'
+        );
         OptionalFloat::of('exception');
+
     }
 
     public function testWrongOptionalBool()
     {
-        $this->setExpectedException(\InvalidArgumentException::class);
+        $this->setExpectedException(
+            \InvalidArgumentException::class, 'The value for Minimalcode\Optional\OptionalBool is unsupported'
+        );
+
         OptionalBool::of('exception');
     }
 }

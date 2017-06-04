@@ -49,7 +49,9 @@ abstract class AbstractOptional
     public static function of($value)
     {
         if (null === $value) {
-            throw new \InvalidArgumentException('Value for Optional cannot be null, use Optional::ofNullable instead');
+            throw new \InvalidArgumentException(
+                \sprintf('Value for %s cannot be null, use Optional::ofNullable instead', static::class)
+            );
         }
 
         $self = new static();
@@ -96,7 +98,7 @@ abstract class AbstractOptional
     public function get()
     {
         if (null === $this->value) {
-            throw new \LogicException('No value present, use ::orElse instead');
+            throw new \LogicException(sprintf('No value present for %s, use ::orElse instead', static::class));
         }
 
         return $this->value;
