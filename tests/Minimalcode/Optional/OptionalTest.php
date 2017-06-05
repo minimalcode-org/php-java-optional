@@ -240,6 +240,32 @@ class OptionalTest extends \PHPUnit_Framework_TestCase
         static::assertSame($book1FromOpt->getTitle(), $book1->getTitle());
     }
 
+    public function testOrElseGetWithNull()
+    {
+        $this->setExpectedException(
+            \InvalidArgumentException::class,
+            'The value for Minimalcode\Optional\TestOptionalBook::orElseGet cannot be null'
+        );
+
+        TestOptionalBook::ofEmpty()
+            ->orElseGet(function () {
+                return null;
+            });
+    }
+
+    public function testOrElseGetWithWrongType()
+    {
+        $this->setExpectedException(
+            \InvalidArgumentException::class,
+            'The value for Minimalcode\Optional\TestOptionalBook is unsupported'
+        );
+
+        TestOptionalBook::ofEmpty()
+            ->orElseGet(function () {
+                return 'string';
+            });
+    }
+
     public function testOrElseGetWithEmptyValue()
     {
         $book2 = TestOptionalBook::ofEmpty()
@@ -294,7 +320,7 @@ class OptionalTest extends \PHPUnit_Framework_TestCase
     public function testWrongOptionalFloat()
     {
         $this->setExpectedException(
-            \InvalidArgumentException::class, 'The value for Minimalcode\Optional\OptionalFloat is unsupporte'
+            \InvalidArgumentException::class, 'The value for Minimalcode\Optional\OptionalFloat is unsupported'
         );
         OptionalFloat::of('exception');
 

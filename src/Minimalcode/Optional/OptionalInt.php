@@ -5,7 +5,7 @@ namespace Minimalcode\Optional;
 /**
  * @method int get()
  * @method int|null orElse($other)
- * @method int|null orElseGet(callable $supplier)
+ * @method int orElseGet(callable $supplier)
  * @method int orElseThrow(callable $exceptionSupplier)
  */
 class OptionalInt extends AbstractOptional

@@ -244,14 +244,22 @@ abstract class AbstractOptional
      * by the supplying function.
      *
      * @param callable $supplier the supplying function that produces a value to be returned
-     * @return mixed|null the value, if present, otherwise the result produced by the supplying function
+     * @return mixed the value, if present, otherwise the result produced by the supplying function, cannnot be null
      * @throws \InvalidArgumentException if no value is present and the supplying function is null
      */
     public function orElseGet(callable $supplier)
     {
-        return null !== $this->value
-            ? $this->value
-            : $this->validate($supplier());
+        if (null !== $this->value) {
+            return $this->value;
+        }
+
+        $value = $supplier();
+
+        if (null === $value) {
+            throw new \InvalidArgumentException(\sprintf('The value for %s::orElseGet cannot be null', static::class));
+        }
+
+        return $this->validate($value);
     }
 
     /**

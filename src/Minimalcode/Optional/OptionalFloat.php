@@ -5,7 +5,7 @@ namespace Minimalcode\Optional;
 /**
  * @method float get()
  * @method float|null orElse($other)
- * @method float|null orElseGet(callable $supplier)
+ * @method float orElseGet(callable $supplier)
  * @method float orElseThrow(callable $exceptionSupplier)
  */
 class OptionalFloat extends AbstractOptional

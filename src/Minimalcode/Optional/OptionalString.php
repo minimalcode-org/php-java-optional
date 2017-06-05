@@ -5,7 +5,7 @@ namespace Minimalcode\Optional;
 /**
  * @method string get()
  * @method string|null orElse($other)
- * @method string|null orElseGet(callable $supplier)
+ * @method string orElseGet(callable $supplier)
  * @method string orElseThrow(callable $exceptionSupplier)
  */
 class OptionalString extends AbstractOptional
