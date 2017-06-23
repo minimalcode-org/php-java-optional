@@ -186,7 +186,7 @@ abstract class AbstractOptional
      * Optional.
      *
      * @param callable $mapper the mapping function to apply to a value, if present
-     * @return mixed the result of applying an Optional-bearing mapping function to the value of this Optional,
+     * @return static the result of applying an Optional-bearing mapping function to the value of this Optional,
      * if a value is present, otherwise an empty Optional
      * @throws \InvalidArgumentException if the mapping function is null or returns a null result
      */
@@ -196,13 +196,17 @@ abstract class AbstractOptional
             return self::ofEmpty();
         }
 
-        $result = $mapper($this->value);
+        $optional = $mapper($this->value);
 
-        if (null === $result) {
+        if (!$optional instanceof self) {
+            throw new \InvalidArgumentException(\sprintf('Supplier must return a %s instance', static::class));
+        }
+
+        if (null === $optional->value) {
             throw new \InvalidArgumentException('Mapper function cannot return null value');
         }
 
-        return $result;
+        return $optional;
     }
 
     /**
@@ -356,5 +360,5 @@ abstract class AbstractOptional
      * @param mixed $value cannot be null
      * @return bool
      */
-    protected abstract function supports($value);
+    abstract protected function supports($value);
 }
