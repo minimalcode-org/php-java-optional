@@ -202,10 +202,6 @@ abstract class AbstractOptional
             throw new \InvalidArgumentException(\sprintf('Supplier must return a %s instance', static::class));
         }
 
-        if (null === $optional->value) {
-            throw new \InvalidArgumentException('Mapper function cannot return null value');
-        }
-
         return $optional;
     }
 
